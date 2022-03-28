@@ -1,4 +1,4 @@
-module github.com/kevin-glare/hardcode-dev-go
+module github.com/kevin-glare/hardcode-dev-go/hw2
 
 go 1.17
 

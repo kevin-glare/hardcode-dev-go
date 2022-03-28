@@ -10,7 +10,7 @@ import (
 
 var (
 	urls  = [2]string{"https://go.dev", "https://golang.org"}
-	depth = 2
+	depth = 1
 	s string
 )
 
