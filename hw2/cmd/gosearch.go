@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/kevin-glare/hardcode-dev-go/pkg/crawler"
-	"github.com/kevin-glare/hardcode-dev-go/pkg/crawler/spider"
+	"github.com/kevin-glare/hardcode-dev-go/hw2/pkg/crawler"
+	"github.com/kevin-glare/hardcode-dev-go/hw2/pkg/crawler/spider"
 	"strings"
 )
 

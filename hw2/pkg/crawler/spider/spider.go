@@ -3,13 +3,13 @@
 package spider
 
 import (
+	"github.com/kevin-glare/hardcode-dev-go/hw2/pkg/crawler"
 	"log"
 	"net/http"
 	"strings"
 	"sync"
 
 	"golang.org/x/net/html"
-	"github.com/kevin-glare/hardcode-dev-go/pkg/crawler"
 )
 
 // Service - служба поискового робота.
