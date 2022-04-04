@@ -22,6 +22,7 @@ const (
 func main() {
 	index, docs := scanURLs()
 
+	// The sort is not guaranteed to be stable.
 	sort.SliceStable(docs, func(i, j int) bool {
 		return docs[i].ID < docs[j].ID
 	})
