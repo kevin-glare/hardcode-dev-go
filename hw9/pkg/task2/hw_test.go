@@ -4,17 +4,18 @@ import (
 	"testing"
 
 	"github.com/kevin-glare/hardcode-dev-go/hw9/pkg/task1"
+	"gotest.tools/assert"
 )
 
 func TestMaxAgeHuman(t *testing.T) {
 	tests := []struct {
 		name string
-		args []interface{}
-		want interface{}
+		args []task1.Interface
+		want task1.Interface
 	}{
 		{
 			name: "Test #1 - customer and employee",
-			args: []interface{}{
+			args: []task1.Interface{
 				task1.NewCustomer(1),
 				task1.NewEmployee(2),
 			},
@@ -22,7 +23,7 @@ func TestMaxAgeHuman(t *testing.T) {
 		},
 		{
 			name: "Test #2 - only customers",
-			args: []interface{}{
+			args: []task1.Interface{
 				task1.NewCustomer(1),
 				task1.NewCustomer(2),
 			},
@@ -30,7 +31,7 @@ func TestMaxAgeHuman(t *testing.T) {
 		},
 		{
 			name: "Test #3 - only employees",
-			args: []interface{}{
+			args: []task1.Interface{
 				task1.NewEmployee(1),
 				task1.NewEmployee(2),
 			},
@@ -42,9 +43,7 @@ func TestMaxAgeHuman(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := MaxAgeHuman(tt.args...)
 
-			if *got != tt.want {
-				t.Errorf("MaxAgeHuman() = %+v, want %+v", *got, tt.want)
-			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
