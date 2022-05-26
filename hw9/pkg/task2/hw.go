@@ -1,17 +1,36 @@
 package task2
 
-import (
-	"github.com/kevin-glare/hardcode-dev-go/hw9/pkg/task1"
-)
+type Customer struct {
+	age int
+}
 
-func MaxAgeHuman(people ...task1.Interface) task1.Interface {
-	var human task1.Interface
+type Employee struct {
+	age int
+}
+
+func NewCustomer(age int) Customer {
+	return Customer{age: age}
+}
+
+func NewEmployee(age int) Employee {
+	return Employee{age: age}
+}
+
+func MaxAgeHuman(people []interface{}) interface{} {
+	var human interface{}
 	var maxAge int
 
 	for _, el := range people {
-		if p, ok := el.(task1.Interface); ok {
-			if p.Age() > maxAge {
-				maxAge = p.Age()
+		if p, ok := el.(Customer); ok {
+			if p.age > maxAge {
+				maxAge = p.age
+				human = p
+			}
+		}
+
+		if p, ok := el.(Employee); ok {
+			if p.age > maxAge {
+				maxAge = p.age
 				human = p
 			}
 		}
