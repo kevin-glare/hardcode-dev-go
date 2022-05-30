@@ -14,50 +14,43 @@ import (
 var (
 	urls  = [2]string{"https://go.dev", "https://golang.org"}
 	depth = 1
+	index *hash.Index
+	docs  []crawler.Document
 )
 
 func main() {
-	index := hash.New()
-	var docs []crawler.Document
-
+	index = hash.New()
 	docs = parsingURLs(index)
 	sort.SliceStable(docs, func(i, j int) bool {
 		return docs[i].ID < docs[j].ID
 	})
 
-	inCh := make(chan string)
-	outCh := make(chan []crawler.Document)
-
-	server, err := netsrv.NewServer(inCh, outCh)
+	server, err := netsrv.NewServer(results)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	defer server.Close()
 
-	server.Run()
-
-	results(index, docs, inCh, outCh)
-}
-
-func results(index *hash.Index, docs []crawler.Document, inCh chan string, outCh chan []crawler.Document) {
-	for {
-		for query := range inCh {
-			findDoc := make([]crawler.Document, 0)
-			indices := index.Search(query)
-			for _, val := range indices {
-				for _, doc := range docs {
-					if doc.ID == val {
-						findDoc = append(findDoc, doc)
-						break
-					}
-				}
-			}
-
-			outCh <- findDoc
-		}
+	err = server.Run()
+	if err != nil {
+		log.Fatalf(err.Error())
 	}
 }
 
+func results(query string) []crawler.Document {
+	findDoc := make([]crawler.Document, 0)
+	indices := index.Search(query)
+	for _, val := range indices {
+		for _, doc := range docs {
+			if doc.ID == val {
+				findDoc = append(findDoc, doc)
+				break
+			}
+		}
+	}
+
+	return findDoc
+}
 
 func parsingURLs(index *hash.Index) []crawler.Document {
 	spider := spider.New()
