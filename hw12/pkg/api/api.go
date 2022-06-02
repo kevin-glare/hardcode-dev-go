@@ -13,6 +13,26 @@ import (
 
 var repository = r.NewRepository()
 
+func Run(port int) {
+	router := mux.NewRouter()
+	endpoints(router)
+	http.Handle("/", router)
+
+	srv := &http.Server{
+		Handler:      router,
+		Addr:         fmt.Sprintf(":%v", port),
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
+}
+
+func endpoints(router *mux.Router) {
+	router.HandleFunc("/index", indexHandler)
+	router.HandleFunc("/docs", docsHandler)
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "index")
 }
@@ -38,22 +58,4 @@ func docsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(payload)
-}
-
-func Run(port int) {
-	router := mux.NewRouter()
-
-	router.HandleFunc("/index", indexHandler)
-	router.HandleFunc("/docs", docsHandler)
-
-	http.Handle("/", router)
-
-	srv := &http.Server{
-		Handler:      router,
-		Addr:         fmt.Sprintf(":%v", port),
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	log.Fatal(srv.ListenAndServe())
 }
