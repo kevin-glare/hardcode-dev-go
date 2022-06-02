@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/kevin-glare/hardcode-dev-go/hw12/pkg/repositories"
+	r "github.com/kevin-glare/hardcode-dev-go/hw12/pkg/repository"
 	"github.com/kevin-glare/hardcode-dev-go/hw5/pkg/crawler"
 	"log"
 	"net/http"
 	"time"
 )
 
-var repository = repositories.NewRepository()
+var repository = r.NewRepository()
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "index")
