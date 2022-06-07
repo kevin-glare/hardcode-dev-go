@@ -41,6 +41,7 @@ func (api *Api) create(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 
 	resp.Data = doc
+	resp.Code = http.StatusCreated
 	renderJSON(w, resp)
 }
 
@@ -100,6 +101,7 @@ func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 
 	resp.Data = doc
+	renderJSON(w, resp)
 }
 
 func (api *Api) destroy(w http.ResponseWriter, r *http.Request) {
