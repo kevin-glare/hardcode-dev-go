@@ -7,7 +7,6 @@ import (
 	"github.com/kevin-glare/hardcode-dev-go/hw5/pkg/crawler"
 	"net/http"
 	"strconv"
-	"sync"
 )
 
 func (api *Api) index(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +24,6 @@ func (api *Api) index(w http.ResponseWriter, r *http.Request) {
 
 func (api *Api) create(w http.ResponseWriter, r *http.Request) {
 	resp := &Response{Code: http.StatusOK}
-	var mutex sync.Mutex
 	var doc crawler.Document
 
 	err := json.NewDecoder(r.Body).Decode(&doc)
@@ -35,10 +33,10 @@ func (api *Api) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mutex.Lock()
+	api.m.Lock()
 	doc.ID = api.store.Docs[len(api.store.Docs)-1].ID + 1
 	api.store.Docs = append(api.store.Docs, doc)
-	mutex.Unlock()
+	api.m.Unlock()
 
 	resp.Data = doc
 	resp.Code = http.StatusCreated
@@ -71,7 +69,6 @@ func (api *Api) read(w http.ResponseWriter, r *http.Request) {
 
 func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 	resp := &Response{Code: http.StatusOK}
-	var mutex sync.Mutex
 	var doc crawler.Document
 
 	vars := mux.Vars(r)
@@ -90,7 +87,7 @@ func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mutex.Lock()
+	api.m.Lock()
 	doc.ID = id
 	for i, d := range api.store.Docs {
 		if d.ID == doc.ID {
@@ -98,7 +95,7 @@ func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	mutex.Unlock()
+	api.m.Unlock()
 
 	resp.Data = doc
 	renderJSON(w, resp)
@@ -106,7 +103,6 @@ func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 
 func (api *Api) destroy(w http.ResponseWriter, r *http.Request) {
 	resp := &Response{Code: http.StatusOK}
-	var mutex sync.Mutex
 
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -117,14 +113,14 @@ func (api *Api) destroy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mutex.Lock()
+	api.m.Lock()
 	for i, doc := range api.store.Docs {
 		if doc.ID == id {
 			api.store.Docs = append(api.store.Docs[:i], api.store.Docs[i+1:]...)
 			break
 		}
 	}
-	mutex.Unlock()
+	api.m.Unlock()
 
 	renderJSON(w, resp)
 }

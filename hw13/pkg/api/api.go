@@ -5,12 +5,14 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
 type Api struct {
 	router *mux.Router
 	store  *Store
+	m 	   sync.Mutex
 }
 
 type Response struct {
@@ -47,12 +49,11 @@ func (api *Api) endpoints() {
 }
 
 func renderJSON(w http.ResponseWriter, resp *Response) {
-	log.Printf("%+v", resp)
+	log.Printf("Response: %+v", resp)
 
 	payload, err := json.Marshal(resp)
 	if err != nil {
-		log.Println(err)
-		resp.Code = http.StatusInternalServerError
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
