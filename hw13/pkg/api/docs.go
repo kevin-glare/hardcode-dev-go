@@ -33,10 +33,10 @@ func (api *Api) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.m.Lock()
+	api.store.Lock()
 	doc.ID = api.store.Docs[len(api.store.Docs)-1].ID + 1
 	api.store.Docs = append(api.store.Docs, doc)
-	api.m.Unlock()
+	api.store.Unlock()
 
 	resp.Data = doc
 	resp.Code = http.StatusCreated
@@ -87,7 +87,7 @@ func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.m.Lock()
+	api.store.Lock()
 	doc.ID = id
 	for i, d := range api.store.Docs {
 		if d.ID == doc.ID {
@@ -95,7 +95,7 @@ func (api *Api) update(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	api.m.Unlock()
+	api.store.Unlock()
 
 	resp.Data = doc
 	renderJSON(w, resp)
@@ -113,14 +113,14 @@ func (api *Api) destroy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.m.Lock()
+	api.store.Lock()
 	for i, doc := range api.store.Docs {
 		if doc.ID == id {
 			api.store.Docs = append(api.store.Docs[:i], api.store.Docs[i+1:]...)
 			break
 		}
 	}
-	api.m.Unlock()
+	api.store.Unlock()
 
 	renderJSON(w, resp)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 
-func Test_index(t *testing.T) {
+func TestAPI_index(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/docs", nil)
 	rr := httptest.NewRecorder()
 	api.router.ServeHTTP(rr, req)
@@ -28,7 +28,7 @@ func Test_index(t *testing.T) {
 	}
 }
 
-func Test_create(t *testing.T) {
+func TestAPI_create(t *testing.T) {
 	data := crawler.Document{
 		URL: "https://example.com",
 		Title: "title",
@@ -49,7 +49,7 @@ func Test_create(t *testing.T) {
 	}
 }
 
-func Test_read(t *testing.T) {
+func TestAPI_read(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/docs/0", nil)
 	rr := httptest.NewRecorder()
 	api.router.ServeHTTP(rr, req)
@@ -67,7 +67,7 @@ func Test_read(t *testing.T) {
 	}
 }
 
-func Test_update(t *testing.T) {
+func TestAPI_update(t *testing.T) {
 	d := api.store.Docs[0]
 
 	data := crawler.Document{
@@ -95,7 +95,7 @@ func Test_update(t *testing.T) {
 	}
 }
 
-func Test_destroy(t *testing.T) {
+func TestAPI_destroy(t *testing.T) {
 	req := httptest.NewRequest(http.MethodDelete, "/api/v1/docs/0", nil)
 	rr := httptest.NewRecorder()
 	api.router.ServeHTTP(rr, req)

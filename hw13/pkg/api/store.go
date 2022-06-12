@@ -6,6 +6,7 @@ import (
 	"github.com/kevin-glare/hardcode-dev-go/hw5/pkg/crawler/spider"
 	"github.com/kevin-glare/hardcode-dev-go/hw5/pkg/index/hash"
 	"sort"
+	"sync"
 )
 
 var (
@@ -15,9 +16,10 @@ var (
 
 type Store struct {
 	index *hash.Index
+
+	sync.Mutex
 	Docs  []crawler.Document
 }
-
 func NewStore() *Store {
 	index := hash.New()
 
@@ -79,13 +81,5 @@ func (r *Store) FindByID(id int) *crawler.Document {
 			return &r.Docs[i]
 		}
 	}
-	return nil
-}
-
-func (r *Store) Update(id int) *crawler.Document {
-	return nil
-}
-
-func (r *Store) Destroy(id int) error {
 	return nil
 }

@@ -5,14 +5,12 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"sync"
 	"time"
 )
 
 type Api struct {
 	router *mux.Router
 	store  *Store
-	m 	   sync.Mutex
 }
 
 type Response struct {
