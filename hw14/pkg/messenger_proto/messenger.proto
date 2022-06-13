@@ -1,0 +1,20 @@
+syntax = "proto3";
+package protobuf;
+
+option go_package = "hw14/pkg/messenger-proto";
+
+message Message {
+  int64 ID = 1;
+  string Text = 2;
+}
+
+message MessageList {
+  repeated Message Messages = 1;
+}
+
+message Empty {}
+
+service Messenger {
+  rpc Send (MessageList) returns (Empty) {}
+  rpc Messages (Empty) returns (MessageList) {}
+}
