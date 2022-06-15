@@ -22,9 +22,9 @@ func NewMessengerServer() *MessengerServer {
 }
 
 func (m *MessengerServer) Send(_ context.Context, list *pb.MessageList) (*pb.Empty, error) {
+	m.Lock()
 	m.MessageList.Messages = append(m.MessageList.Messages, list.GetMessages()...)
 
-	m.Lock()
 	id := len(m.MessageList.Messages)
 	for _, msg := range list.GetMessages() {
 		msg.ID = int64(id)
