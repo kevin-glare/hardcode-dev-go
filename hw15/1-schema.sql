@@ -28,9 +28,9 @@ CREATE INDEX CONCURRENTLY IF NOT EXISTS films_studio_idx ON films USING btree (l
 
 -- актёры (имя, дата рождения);
 CREATE TABLE actors (
-    id SERIAL PRIM`ARY KEY,
+    id SERIAL PRIMARY KEY,
     full_name VARCHAR NOT NULL DEFAULT '',
-    birthdate DATE` NOT NULL
+    birthdate DATE NOT NULL
 );
 CREATE INDEX CONCURRENTLY IF NOT EXISTS actors_full_name_idx ON actors USING btree (lower(full_name));
 
