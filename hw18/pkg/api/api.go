@@ -12,6 +12,7 @@ import (
 type Api struct {
 	router *mux.Router
 	addr   string
+
 	sync.Mutex
 	data map[string]string
 }
