@@ -49,7 +49,7 @@ func (a *Api) addLink(w http.ResponseWriter, r *http.Request) {
 	a.data[id] = url
 	a.Unlock()
 
-	err = a.kfk.SendMessage(url)
+	err = a.producer.SendMessage(url)
 	if err != nil {
 		log.Println(err.Error())
 	}

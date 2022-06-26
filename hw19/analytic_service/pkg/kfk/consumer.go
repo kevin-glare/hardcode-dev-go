@@ -16,13 +16,12 @@ type Statistic struct {
 
 type Analytic struct {
 	Reader *kafka.Reader
-	Writer *kafka.Writer
 
 	sync.Mutex
 	Statistic
 }
 
-func New(brokers []string, topic, groupID string) (*Analytic, error) {
+func NewConsumer(brokers []string, topic, groupID string) (*Analytic, error) {
 	if len(brokers) == 0 || brokers[0] == "" || topic == "" || groupID == "" {
 		return nil, errors.New("не указаны параметры подключения к Kafka")
 	}
@@ -35,15 +34,8 @@ func New(brokers []string, topic, groupID string) (*Analytic, error) {
 		MaxBytes: 10e6,
 	})
 
-	w := &kafka.Writer{
-		Addr:     kafka.TCP(brokers[0]),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
-	}
-
 	return &Analytic{
 		Reader:    r,
-		Writer:    w,
 		Statistic: Statistic{},
 	}, nil
 }
@@ -69,12 +61,4 @@ func (s *Analytic) ConsumerRun() {
 			log.Println(err)
 		}
 	}
-}
-
-func (s *Analytic) SendMessage(message string) error {
-	msg := kafka.Message{
-		Value: []byte(message),
-	}
-
-	return s.Writer.WriteMessages(context.Background(), msg)
 }

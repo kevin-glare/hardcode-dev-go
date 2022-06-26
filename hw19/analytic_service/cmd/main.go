@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	kfk, err := kfk.New([]string{"localhost:9092"}, "storage", "storage-consumer-group")
+	kfk, err := kfk.NewConsumer([]string{"localhost:9092"}, "storage", "storage-consumer-group")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

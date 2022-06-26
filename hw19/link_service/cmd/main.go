@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	kfk, err := kfk.New([]string{"localhost:9092"}, "storage", "storage-consumer-group")
+	producer, err := kfk.NewProducer("localhost:9092", "storage")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	api.Run("localhost:8080", kfk)
+	api.Run("localhost:8080", producer)
 }

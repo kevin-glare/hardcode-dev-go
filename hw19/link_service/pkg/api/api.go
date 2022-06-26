@@ -11,9 +11,9 @@ import (
 )
 
 type Api struct {
-	router *mux.Router
-	addr   string
-	kfk    *kfk.Analytic
+	router   *mux.Router
+	addr     string
+	producer *kfk.Producer
 
 	sync.Mutex
 	data map[string]string
@@ -25,12 +25,12 @@ type Response struct {
 	Code  int         `json:"-"`
 }
 
-func Run(addr string, kfk *kfk.Analytic) {
+func Run(addr string, producer *kfk.Producer) {
 	api := &Api{
-		router: mux.NewRouter(),
-		addr:   addr,
-		kfk:    kfk,
-		data:   make(map[string]string),
+		router:   mux.NewRouter(),
+		addr:     addr,
+		producer: producer,
+		data:     make(map[string]string),
 	}
 
 	api.endpoints()
@@ -47,7 +47,7 @@ func Run(addr string, kfk *kfk.Analytic) {
 }
 
 func (a *Api) endpoints() {
-	a.router.HandleFunc("/tt/{id}", a.redirectToLink).Methods(http.MethodGet)
+	a.router.HandleFunc("/{id}", a.redirectToLink).Methods(http.MethodGet)
 	a.router.HandleFunc("/api/v1/links", a.addLink).Methods(http.MethodPost)
 	a.router.HandleFunc("/api/v1/links/{id}", a.showLink).Methods(http.MethodGet)
 }
