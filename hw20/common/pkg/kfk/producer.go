@@ -2,7 +2,9 @@ package kfk
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/model"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -24,9 +26,14 @@ func NewProducer(broker, topic string) (*Producer, error) {
 	return &Producer{w}, nil
 }
 
-func (p *Producer) SendMessage(ctx context.Context, message string) error {
+func (p *Producer) SendMessage(ctx context.Context, message model.Link) error {
+	payload, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+
 	msg := kafka.Message{
-		Value: []byte(message),
+		Value: payload,
 	}
 
 	return p.WriteMessages(ctx, msg)

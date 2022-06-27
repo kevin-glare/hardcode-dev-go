@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	env.Load("/link-service")
+	env.Load("link-service")
 
 	mongoClient, err := database.NewClient(os.Getenv("MONGO_CONNECT_URL"))
 	if err != nil {

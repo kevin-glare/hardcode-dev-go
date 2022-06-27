@@ -3,8 +3,9 @@ package service
 import (
 	"context"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/kfk"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/model"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/model"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/repository"
+	"go.mongodb.org/mongo-driver/bson"
 	"math/rand"
 	"time"
 )
@@ -23,14 +24,14 @@ func NewLinkService(repo *repository.LinkRepo, producer *kfk.Producer) *LinkServ
 	return &LinkService{repo: repo, producer: producer}
 }
 
-func (s *LinkService) NewLink(ctx context.Context, url string) (string, error) {
-	err := s.producer.SendMessage(ctx, url)
-	if err == nil {
-		return "", err
-	}
+func (s *LinkService) Link(ctx context.Context, short_url string) (*model.Link, error) {
+	return s.repo.FindLink(ctx, bson.M{"short_url": short_url})
+}
 
-	link, err := s.repo.FindLink(ctx, url)
+func (s *LinkService) NewLink(ctx context.Context, url string) (string, error) {
+	link, err := s.repo.FindLink(ctx, bson.M{"url": url})
 	if err == nil {
+		go s.producer.SendMessage(ctx, *link)
 		return link.ShortUrl, nil
 	}
 
@@ -43,6 +44,8 @@ func (s *LinkService) NewLink(ctx context.Context, url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	go s.producer.SendMessage(ctx, *link)
 
 	return link.ShortUrl, nil
 }

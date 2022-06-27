@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/model"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -19,9 +19,9 @@ func NewLinkRepo(db *mongo.Database) *LinkRepo {
 	}
 }
 
-func (r *LinkRepo) FindLink(ctx context.Context, url string) (*model.Link, error) {
+func (r *LinkRepo) FindLink(ctx context.Context, query bson.M) (*model.Link, error) {
 	var link model.Link
-	err := r.db.FindOne(ctx, bson.M{"url": url}).Decode(&link)
+	err := r.db.FindOne(ctx, query).Decode(&link)
 
 	return &link, err
 }

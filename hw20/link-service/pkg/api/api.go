@@ -39,6 +39,31 @@ func Run(addr string, linkService *service.LinkService) {
 
 func (a *Api) endpoints() {
 	a.router.HandleFunc("/api/v1/links", a.newLink).Methods(http.MethodPost)
+	a.router.HandleFunc("/api/v1/links/{id}", a.link).Methods(http.MethodPost)
+}
+
+func (a *Api) link(w http.ResponseWriter, r *http.Request) {
+	resp := &api.Response{Code: http.StatusOK}
+	params := make(map[string]string)
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		resp.Code = http.StatusUnprocessableEntity
+		resp.Error = err.Error()
+		api.RenderJSON(w, resp)
+		return
+	}
+
+	link, err := a.service.Link(context.Background(), params["short_url"])
+	if err != nil {
+		resp.Code = http.StatusNotFound
+		resp.Error = err.Error()
+		api.RenderJSON(w, resp)
+		return
+	}
+
+	resp.Data = link.Url
+	api.RenderJSON(w, resp)
 }
 
 func (a *Api) newLink(w http.ResponseWriter, r *http.Request) {

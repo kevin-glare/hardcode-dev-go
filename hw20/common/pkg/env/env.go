@@ -8,12 +8,12 @@ import (
 )
 
 func Load(path string) {
-	err := godotenv.Load(fmt.Sprintf("%s%s/.env", currentPath(), path))
+	err := godotenv.Load(fmt.Sprintf("%s/%s/.env", currentPath(), path))
 	if err != nil {
 		log.Printf("%s .env not found\n", path)
 	}
 
-	err = godotenv.Load()
+	err = godotenv.Load(fmt.Sprintf("%s/%s/.env", currentPath(), "common"))
 	if err != nil {
 		log.Println("common .env not found")
 	}
