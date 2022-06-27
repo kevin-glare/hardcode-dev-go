@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/model"
 	"github.com/segmentio/kafka-go"
 	"log"
@@ -31,8 +30,8 @@ func NewConsumer(brokers []string, topic, groupID string, f func(link model.Link
 	return &Consumer{reader: r, handleFunc: f}, nil
 }
 
-func (c *Consumer) ConsumerRun() {
-	log.Println("ConsumerRun")
+func (c *Consumer) Run() {
+	log.Println("Consumer Run")
 
 	for {
 		msg, err := c.reader.FetchMessage(context.Background())
@@ -40,8 +39,6 @@ func (c *Consumer) ConsumerRun() {
 			log.Printf("FetchMessage: %s", err.Error())
 			continue
 		}
-
-		fmt.Println(msg.Value)
 
 		var link model.Link
 		err = json.Unmarshal(msg.Value, &link)
