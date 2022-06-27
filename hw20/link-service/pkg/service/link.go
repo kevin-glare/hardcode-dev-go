@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/kfk"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/model"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/repository"
 	"math/rand"
@@ -14,14 +15,20 @@ var (
 )
 
 type LinkService struct {
-	repo *repository.LinkRepo
+	repo     *repository.LinkRepo
+	producer *kfk.Producer
 }
 
-func NewLinkService(repo *repository.LinkRepo) *LinkService {
-	return &LinkService{repo: repo}
+func NewLinkService(repo *repository.LinkRepo, producer *kfk.Producer) *LinkService {
+	return &LinkService{repo: repo, producer: producer}
 }
 
 func (s *LinkService) NewLink(ctx context.Context, url string) (string, error) {
+	err := s.producer.SendMessage(ctx, url)
+	if err == nil {
+		return "", err
+	}
+
 	link, err := s.repo.FindLink(ctx, url)
 	if err == nil {
 		return link.ShortUrl, nil

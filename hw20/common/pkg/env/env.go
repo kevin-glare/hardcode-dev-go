@@ -10,7 +10,12 @@ import (
 func Load(path string) {
 	err := godotenv.Load(fmt.Sprintf("%s%s/.env", currentPath(), path))
 	if err != nil {
-		log.Println(".env not found")
+		log.Printf("%s .env not found\n", path)
+	}
+
+	err = godotenv.Load()
+	if err != nil {
+		log.Println("common .env not found")
 	}
 }
 
