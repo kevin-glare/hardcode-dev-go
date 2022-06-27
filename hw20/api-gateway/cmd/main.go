@@ -8,6 +8,9 @@ import (
 
 func main() {
 	env.Load("api-gateway")
+	env.Load("analytic-service")
+	env.Load("cache-service")
+	env.Load("link-service")
 
 	api.Run(os.Getenv("API_GATEWAY_HOST"))
 }

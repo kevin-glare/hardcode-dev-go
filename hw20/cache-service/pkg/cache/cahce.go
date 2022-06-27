@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/model"
@@ -50,6 +51,10 @@ func (c *Cache) Get(shortLink string) (*model.Link, error) {
 	err := json.Unmarshal([]byte(cmd.Val()), &link)
 	if err != nil {
 		return nil, err
+	}
+
+	if link.Url == "" {
+		return nil, errors.New("Link not found")
 	}
 
 	return &link, nil

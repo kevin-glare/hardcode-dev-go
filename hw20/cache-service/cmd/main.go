@@ -21,5 +21,5 @@ func main() {
 
 	go consumer.Run()
 
-	api.Run(os.Getenv("CACHE_SERVICE_HTTP_HOST"), redis, consumer)
+	api.Run(os.Getenv("CACHE_SERVICE_HTTP_HOST"), redis)
 }

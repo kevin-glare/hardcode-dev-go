@@ -1,28 +1,24 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/cache-service/pkg/cache"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/api"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/kfk"
 	"log"
 	"net/http"
 	"time"
 )
 
 type Api struct {
-	router   *mux.Router
-	addr     string
-	cache    *cache.Cache
-	consumer *kfk.Consumer
+	router *mux.Router
+	addr   string
+	cache  *cache.Cache
 }
 
-func Run(addr string, cache *cache.Cache, consumer *kfk.Consumer) {
+func Run(addr string, cache *cache.Cache) {
 	api := &Api{
-		router:   mux.NewRouter(),
-		cache:    cache,
-		consumer: consumer,
+		router: mux.NewRouter(),
+		cache:  cache,
 	}
 
 	api.endpoints()
@@ -40,22 +36,14 @@ func Run(addr string, cache *cache.Cache, consumer *kfk.Consumer) {
 }
 
 func (a *Api) endpoints() {
-	a.router.HandleFunc("/api/v1/links", a.link).Methods(http.MethodPost)
+	a.router.HandleFunc("/api/v1/links/{shortURL}", a.link).Methods(http.MethodGet)
 }
 
 func (a *Api) link(w http.ResponseWriter, r *http.Request) {
 	resp := &api.Response{Code: http.StatusOK}
-	params := make(map[string]string)
+	vars := mux.Vars(r)
 
-	err := json.NewDecoder(r.Body).Decode(&params)
-	if err != nil {
-		resp.Code = http.StatusUnprocessableEntity
-		resp.Error = err.Error()
-		api.RenderJSON(w, resp)
-		return
-	}
-
-	link, err := a.cache.Get(params["short_url"])
+	link, err := a.cache.Get(vars["shortURL"])
 	if err != nil {
 		resp.Code = http.StatusUnprocessableEntity
 		resp.Error = err.Error()
