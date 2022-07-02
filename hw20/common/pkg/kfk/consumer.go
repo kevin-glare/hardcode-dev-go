@@ -47,7 +47,10 @@ func (c *Consumer) Run() {
 			continue
 		}
 
-		c.handleFunc(link)
+		err = c.handleFunc(link)
+		if err != nil {
+			log.Println(err)
+		}
 
 		err = c.reader.CommitMessages(context.Background(), msg)
 		if err != nil {

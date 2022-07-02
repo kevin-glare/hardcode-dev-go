@@ -1,13 +1,13 @@
-package api
+package delivery
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 type Response struct {
@@ -16,6 +16,7 @@ type Response struct {
 	Code  int         `json:"-"`
 }
 
+// RenderJSON функция обработки структуры Response и передача ответа клиенту
 func RenderJSON(w http.ResponseWriter, resp *Response) {
 	log.Printf("Response: %+v", resp)
 
@@ -31,7 +32,8 @@ func RenderJSON(w http.ResponseWriter, resp *Response) {
 
 type ParsingResponse map[string]interface{}
 
-func Get(url string) (ParsingResponse, error) {
+// HttpGet функция отправки GET запроса и обработка ответа
+func HttpGet(url string) (ParsingResponse, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -57,26 +59,12 @@ func Get(url string) (ParsingResponse, error) {
 	return result, err
 }
 
-func Post(url string, params map[string]interface{}) (ParsingResponse, error) {
-	payload := new(bytes.Buffer)
-	err := json.NewEncoder(payload).Encode(params)
+// HttpPost функция отправки POST запроса и обработка ответа
+func HttpPost(url string, params url.Values) (ParsingResponse, error) {
+	res, err := http.PostForm(url, params)
 	if err != nil {
 		return nil, err
 	}
-
-	client := &http.Client{}
-	req, err := http.NewRequest("POST", url, payload)
-
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Add("Content-Type", "application/json")
-
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {

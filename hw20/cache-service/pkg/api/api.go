@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gorilla/mux"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/cache-service/pkg/cache"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/api"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/delivery"
 	"log"
 	"net/http"
 	"time"
@@ -40,17 +40,17 @@ func (a *Api) endpoints() {
 }
 
 func (a *Api) link(w http.ResponseWriter, r *http.Request) {
-	resp := &api.Response{Code: http.StatusOK}
+	resp := &delivery.Response{Code: http.StatusOK}
 	vars := mux.Vars(r)
 
 	link, err := a.cache.Get(vars["shortURL"])
 	if err != nil {
 		resp.Code = http.StatusUnprocessableEntity
 		resp.Error = err.Error()
-		api.RenderJSON(w, resp)
+		delivery.RenderJSON(w, resp)
 		return
 	}
 
 	resp.Data = link.Url
-	api.RenderJSON(w, resp)
+	delivery.RenderJSON(w, resp)
 }

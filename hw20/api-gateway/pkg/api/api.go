@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/api-gateway/pkg/service"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/api"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/delivery"
 	"log"
 	"net/http"
 	"time"
@@ -47,9 +47,9 @@ func (a *Api) redirectToLink(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	result, err := a.service.ShowLink(vars["shortURL"])
 	if err != nil {
-		resp := &api.Response{Code: http.StatusUnprocessableEntity}
+		resp := &delivery.Response{Code: http.StatusUnprocessableEntity}
 		resp.Error = err.Error()
-		api.RenderJSON(w, resp)
+		delivery.RenderJSON(w, resp)
 		return
 	}
 
@@ -57,28 +57,28 @@ func (a *Api) redirectToLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Api) statistic(w http.ResponseWriter, r *http.Request) {
-	resp := &api.Response{Code: http.StatusOK}
+	resp := &delivery.Response{Code: http.StatusOK}
 	result, err := a.service.Statistic()
 	if err != nil {
 		resp.Error = err.Error()
 		resp.Code = http.StatusUnprocessableEntity
-		api.RenderJSON(w, resp)
+		delivery.RenderJSON(w, resp)
 		return
 	}
 
 	resp.Data = result["data"]
-	api.RenderJSON(w, resp)
+	delivery.RenderJSON(w, resp)
 }
 
 func (a *Api) addLink(w http.ResponseWriter, r *http.Request) {
-	resp := &api.Response{Code: http.StatusOK}
+	resp := &delivery.Response{Code: http.StatusOK}
 
 	params := make(map[string]string)
 	err := json.NewDecoder(r.Body).Decode(&params)
 	if err != nil {
 		resp.Code = http.StatusUnprocessableEntity
 		resp.Error = err.Error()
-		api.RenderJSON(w, resp)
+		delivery.RenderJSON(w, resp)
 		return
 	}
 
@@ -86,26 +86,26 @@ func (a *Api) addLink(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		resp.Error = err.Error()
 		resp.Code = http.StatusUnprocessableEntity
-		api.RenderJSON(w, resp)
+		delivery.RenderJSON(w, resp)
 		return
 	}
 
 	resp.Data = result["data"]
-	api.RenderJSON(w, resp)
+	delivery.RenderJSON(w, resp)
 }
 
 func (a *Api) showLink(w http.ResponseWriter, r *http.Request) {
-	resp := &api.Response{Code: http.StatusOK}
+	resp := &delivery.Response{Code: http.StatusOK}
 	vars := mux.Vars(r)
 
 	result, err := a.service.ShowLink(vars["shortURL"])
 	if err != nil {
 		resp.Error = err.Error()
 		resp.Code = http.StatusUnprocessableEntity
-		api.RenderJSON(w, resp)
+		delivery.RenderJSON(w, resp)
 		return
 	}
 
 	resp.Data = result["data"]
-	api.RenderJSON(w, resp)
+	delivery.RenderJSON(w, resp)
 }

@@ -1,4 +1,4 @@
-package service
+package link
 
 import (
 	"context"
@@ -15,20 +15,20 @@ var (
 	n       = 8
 )
 
-type LinkService struct {
+type Struct struct {
 	repo     *repository.LinkRepo
 	producer *kfk.Producer
 }
 
-func NewLinkService(repo *repository.LinkRepo, producer *kfk.Producer) *LinkService {
-	return &LinkService{repo: repo, producer: producer}
+func New(repo *repository.LinkRepo, producer *kfk.Producer) *Struct {
+	return &Struct{repo: repo, producer: producer}
 }
 
-func (s *LinkService) Link(ctx context.Context, short_url string) (*model.Link, error) {
+func (s *Struct) Link(ctx context.Context, short_url string) (*model.Link, error) {
 	return s.repo.FindLink(ctx, bson.M{"short_url": short_url})
 }
 
-func (s *LinkService) NewLink(ctx context.Context, url string) (string, error) {
+func (s *Struct) NewLink(ctx context.Context, url string) (string, error) {
 	link, err := s.repo.FindLink(ctx, bson.M{"url": url})
 	if err == nil {
 		go s.producer.SendMessage(ctx, *link)

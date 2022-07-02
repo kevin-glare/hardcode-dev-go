@@ -6,8 +6,8 @@ import (
 	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/kfk"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/api"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/database"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/link"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/repository"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/link-service/pkg/service"
 	"log"
 	"os"
 )
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	linkRepo := repository.NewLinkRepo(mongoClient.Database(os.Getenv("MONGO_DATABASE_NAME")))
-	linkService := service.NewLinkService(linkRepo, producer)
+	linkService := link.New(linkRepo, producer)
 
 	api.Run(os.Getenv("LINK_SERVICE_HTTP_HOST"), linkService)
 }

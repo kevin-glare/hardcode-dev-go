@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gorilla/mux"
 	"github.com/kevin-glare/hardcode-dev-go/hw20/analytic-service/pkg/service"
-	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/api"
+	"github.com/kevin-glare/hardcode-dev-go/hw20/common/pkg/delivery"
 	"log"
 	"net/http"
 	"time"
@@ -40,6 +40,6 @@ func (a *Api) endpoints() {
 }
 
 func (a *Api) statistic(w http.ResponseWriter, r *http.Request) {
-	resp := &api.Response{Code: http.StatusOK, Data: a.stat.StatisticData()}
-	api.RenderJSON(w, resp)
+	resp := &delivery.Response{Code: http.StatusOK, Data: a.stat.StatisticData()}
+	delivery.RenderJSON(w, resp)
 }
