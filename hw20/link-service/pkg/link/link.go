@@ -37,7 +37,7 @@ func (s *Struct) NewLink(ctx context.Context, url string) (string, error) {
 
 	link = &model.Link{
 		Url:      url,
-		ShortUrl: shortLink(),
+		ShortUrl: ShortLink(),
 	}
 
 	err = s.repo.CreateLink(ctx, link)
@@ -50,7 +50,7 @@ func (s *Struct) NewLink(ctx context.Context, url string) (string, error) {
 	return link.ShortUrl, nil
 }
 
-func shortLink() string {
+func ShortLink() string {
 	rand.Seed(time.Now().UnixNano())
 
 	b := make([]rune, n)
